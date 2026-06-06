@@ -5,27 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mona Lore — Mobile</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Lora&family=Special+Elite&display=optional" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Lora&family=Special+Elite&display=swap" rel="stylesheet">
 
 <style>
-
-/* 🌸 ANTI‑GLITCH LOADING STATE */
-body.loading * {
-    transition: none !important;
-}
-
-body.loading #social-expanded-menu,
-body.loading #overlay-blur {
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-
-/* Hide extra social buttons BEFORE JS touches them */
-.social-links .social-btn:nth-child(n+4) {
-    display: none !important;
-}
-
-/* ORIGINAL STYLES */
 body {
     background: #EFCE7B20;
     margin: 0;
@@ -151,18 +133,17 @@ body {
     pointer-events: auto;
 }
 
-/* EXPANDED SOCIAL MENU */
+/* EXPANDED SOCIAL MENU — 3 PER ROW, CENTERED */
 #social-expanded-menu {
     position: fixed;
-    top: 50%;
+    bottom: 60px;
     left: 50%;
-    transform: translate(-50%, -40%);
-    background: rgba(243, 231, 216, 0.75);
-    backdrop-filter: blur(12px) saturate(140%);
-    padding: 22px 26px;
-    border-radius: 20px;
+    transform: translateX(-50%) translateY(20px);
+    background: #F3E7D8;
+    padding: 18px;
+    border-radius: 16px;
     border: 1px solid #D3C2CD80;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease, transform 0.25s ease;
@@ -170,23 +151,21 @@ body {
 
     display: grid;
     grid-template-columns: repeat(3, auto);
-    gap: 14px;
+    gap: 10px;
     justify-content: center;
-    align-items: center;
 }
 
 #social-expanded-menu.active {
     opacity: 1;
     pointer-events: auto;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%) translateY(0);
 }
 
 #social-expanded-menu .social-btn {
     width: 90px;
     justify-content: center;
     text-align: center;
-    padding: 10px 12px;
-    border-radius: 14px;
+    padding: 8px 10px;
 }
 
 /* CONTENT AREA */
@@ -265,11 +244,10 @@ body {
     border-bottom: 1px solid #D3C2CD;
     font-size: 15px;
 }
-
 </style>
-</head>
 
-<body class="loading">
+</head>
+<body>
 
 <!-- FIXED PROFILE HEADER -->
 <div id="mobile-profile">
@@ -277,23 +255,23 @@ body {
     <div class="profile-name">Mona</div>
 
     <div class="profile-stats">
-        <div class="stat" id="posts-tab">…</div>
-        <div class="stat" id="works-tab">…</div>
-        <div class="stat" id="interests-tab">…</div>
+        <div class="stat" id="posts-tab">0 posts</div>
+        <div class="stat" id="works-tab">0 works</div>
+        <div class="stat" id="interests-tab">0 interests</div>
     </div>
 
-    <div class="profile-bio">SHE | HER | HIS 🌸🌸</div>
+    <div class="profile-bio">SEE GOOD IN ALL THINGS ﾒ૦ﾒ૦💋</div>
 
     <!-- SOCIAL BUTTONS -->
     <div class="social-links" id="social-links">
 
         <!-- MAIN 3 BUTTONS -->
-        <a class="social-btn" href="https://open.spotify.com/user/315edpfbyt..." target="_blank">
+        <a class="social-btn" href="https://open.spotify.com/user/315edpfbytpocmmppzisjji2td6y?si=DiitzBRxQcSH8hsQhV8xLw&nd=1&dlsi=5ec9a2cf13124934" target="_blank">
             <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/spotify.svg" class="social-icon">
             <span>spotify</span>
         </a>
 
-        <a class="social-btn" href="https://twitter.com/YOURUSERNAME" target="_blank">
+        <a class="social-btn" href="https://x.com/honey_idoll?s=21" target="_blank">
             <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" class="social-icon">
             <span>twitter</span>
         </a>
@@ -306,8 +284,8 @@ body {
         <!-- + BUTTON -->
         <div id="social-more-btn" class="social-more-btn">+</div>
 
-        <!-- EXTRA BUTTONS -->
-        <a class="social-btn" href="https://youtube.com/@YOURCHANNEL" target="_blank">
+        <!-- HIDDEN EXTRA BUTTONS (THESE WILL BE MOVED INTO EXPANDED MENU) -->
+        <a class="social-btn" href="https://www.youtube.com/@slushiest02?si=L_4Jncg1hB2sTfPX" target="_blank">
             <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" class="social-icon">
             <span>youtube</span>
         </a>
@@ -332,12 +310,6 @@ body {
 <div id="social-expanded-menu"></div>
 
 <script>
-
-/* REMOVE LOADING STATE ASAP */
-document.addEventListener("DOMContentLoaded", () => {
-    document.body.classList.remove("loading");
-});
-
 /* JSON SOURCES */
 const PHOTOS_JSON = "https://honeyidoll.github.io/Photos/aphotos.json";
 const WORKS_JSON = "https://honeyidoll.github.io/Works/aworks.json";
@@ -516,7 +488,7 @@ postsTab.onclick = loadPosts;
 worksTab.onclick = loadWorks;
 interestsTab.onclick = loadInterests;
 
-/* PRELOAD COUNTS — now replaces “…” instead of “0” */
+/* PRELOAD COUNTS */
 fetch(WORKS_JSON)
   .then(r => r.json())
   .then(data => {
@@ -529,39 +501,41 @@ fetch(INTERESTS_JSON)
       interestsTab.textContent = data.interests.length + " interests";
   });
 
-fetch(PHOTOS_JSON)
-  .then(r => r.json())
-  .then(data => {
-      postsTab.textContent = Object.keys(data.groups).length + " posts";
-  });
-
 /* DEFAULT VIEW */
 loadPosts();
 
 /* SOCIAL MENU EXPANSION */
-document.addEventListener("DOMContentLoaded", () => {
+window.onload = () => {
     const socialLinksContainer = document.getElementById("social-links");
     const moreBtn = document.getElementById("social-more-btn");
     const expandedMenu = document.getElementById("social-expanded-menu");
     const overlay = document.getElementById("overlay-blur");
 
+    // Collect ALL social buttons except the + button
     const allButtons = Array.from(socialLinksContainer.querySelectorAll(".social-btn"));
 
+    // Clone ALL into expanded menu
     allButtons.forEach(btn => {
         expandedMenu.appendChild(btn.cloneNode(true));
     });
 
+    // Hide all except first 3 in main row
+    allButtons.forEach((btn, index) => {
+        if (index >= 3) btn.style.display = "none";
+    });
+
+    // Open menu
     moreBtn.addEventListener("click", () => {
         expandedMenu.classList.add("active");
         overlay.classList.add("active");
     });
 
+    // Close menu when clicking outside
     overlay.addEventListener("click", () => {
         expandedMenu.classList.remove("active");
         overlay.classList.remove("active");
     });
-});
-
+};
 </script>
 
 </body>
