@@ -1,0 +1,24 @@
+{
+  "socials": [
+    {
+      "name": "spotify",
+      "icon": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/spotify.svg",
+      "link": "https://open.spotify.com/user/315edpfbyt..."
+    },
+    {
+      "name": "twitter",
+      "icon": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg",
+      "link": "https://twitter.com/YOURUSERNAME"
+    },
+    {
+      "name": "instagram",
+      "icon": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg",
+      "link": "https://instagram.com/YOURUSERNAME"
+    },
+    {
+      "name": "youtube",
+      "icon": "https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg",
+      "link": "https://youtube.com/@YOURCHANNEL"
+    }
+  ]
+}
