@@ -2,80 +2,189 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Multi-Group Feed</title>
+<title>Mona Lore</title>
+
+<!-- FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Lora&family=Special+Elite&display=swap" rel="stylesheet">
+
+<style>
+/* PAGE BACKGROUND — soft parchment */
+body {
+    background: #EFCE7B20;
+    margin: 0;
+    font-family: 'Lora', serif;
+}
+
+/* HEADER — Lilac Grey + Dusty Berry */
+#header {
+    background: #D3C2CD;
+    padding: 25px;
+    font-size: 32px;
+    font-family: 'Cormorant Garamond', serif;
+    color: #2B2B23;
+    border-bottom: 6px solid #D17089;
+    text-align: center;
+}
+
+/* POST TITLE */
+.post-title {
+    font-family: 'Cormorant Garamond', serif;
+    color: #2B2B23;
+    font-size: 22px;
+    margin: 20px 0 10px;
+    text-align: center;
+}
+
+/* SLIDER */
+.slider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* FAINT ARROWS */
+.slider button {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #6777B680;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.slider button:hover {
+    color: #D8560E;
+}
+
+/* IMAGE */
+.slider img {
+    width: 260px;
+    border-radius: 12px;
+}
+
+/* IG-STYLE "View notes" LINK */
+.notes-toggle {
+    margin-top: 8px;
+    text-align: left;
+    width: 260px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14px;
+    color: #6777B6;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* IG NOTE STYLE */
+.notes-panel {
+    display: none;
+    width: 260px;
+    margin: 6px auto 25px;
+    font-family: 'Special Elite', monospace;
+    color: #2B2B23;
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.note {
+    margin-bottom: 6px;
+}
+
+.note .user {
+    font-weight: bold;
+    margin-right: 6px;
+}
+</style>
+
 </head>
 <body>
+
+<div id="header">Mona Lore</div>
 
 <div id="feed"></div>
 
 <script>
-// FETCH JSON DATA
 fetch("https://honeyidoll.github.io/Photos/aphotos.json")
   .then(response => response.json())
   .then(data => {
       const feed = document.getElementById("feed");
 
-      // LOOP THROUGH EACH GROUP (each becomes its own post)
       Object.keys(data.groups).forEach(groupName => {
           const group = data.groups[groupName];
           const images = group.photos;
+          const notes = group.notes || []; // notes array
 
-          // CREATE POST CONTAINER
-          // (this is where layout for each post will go)
-          const post = document.createElement("div");
-          post.style.marginBottom = "40px"; // layout spacing between posts
+          // TITLE
+          const title = document.createElement("div");
+          title.className = "post-title";
+          title.textContent = groupName;
+          feed.appendChild(title);
 
-          // POST TITLE
-          const title = document.createElement("h2");
-          title.textContent = groupName + " (Group " + group.id + ")";
-          post.appendChild(title);
-
-          // SLIDER CONTAINER
-          // (this is where slider layout will go)
+          // SLIDER
           const slider = document.createElement("div");
-          slider.style.display = "flex";
-          slider.style.alignItems = "center";
-          slider.style.gap = "10px";
+          slider.className = "slider";
 
-          // LEFT ARROW BUTTON
           const left = document.createElement("button");
-          left.textContent = "<";
+          left.textContent = "‹";
 
-          // RIGHT ARROW BUTTON
           const right = document.createElement("button");
-          right.textContent = ">";
+          right.textContent = "›";
 
-          // IMAGE ELEMENT
-          // (this is where image styling/layout will go)
           const img = document.createElement("img");
-          img.width = 200;
 
-          // SLIDER LOGIC
           let index = 0;
           img.src = "https://honeyidoll.github.io/Photos/" + images[index];
 
-          // LEFT ARROW CLICK
           left.onclick = () => {
               if (index > 0) index--;
               img.src = "https://honeyidoll.github.io/Photos/" + images[index];
           };
 
-          // RIGHT ARROW CLICK
           right.onclick = () => {
               if (index < images.length - 1) index++;
               img.src = "https://honeyidoll.github.io/Photos/" + images[index];
           };
 
-          // BUILD SLIDER
           slider.appendChild(left);
           slider.appendChild(img);
           slider.appendChild(right);
+          feed.appendChild(slider);
 
-          // ADD SLIDER TO POST
-          post.appendChild(slider);
+          // IG-STYLE "View notes"
+          const toggle = document.createElement("div");
+          toggle.className = "notes-toggle";
+          toggle.textContent = notes.length > 0 
+              ? `View ${notes.length} note${notes.length > 1 ? "s" : ""}`
+              : "No notes";
+          feed.appendChild(toggle);
 
-          // ADD POST TO FEED
-          feed.appendChild(post);
+          // NOTES PANEL
+          const panel = document.createElement("div");
+          panel.className = "notes-panel";
+
+          notes.forEach(n => {
+              const c = document.createElement("div");
+              c.className = "note";
+
+              const user = document.createElement("span");
+              user.className = "user";
+              user.textContent = "mona";
+
+              const text = document.createElement("span");
+              text.textContent = n;
+
+              c.appendChild(user);
+              c.appendChild(text);
+              panel.appendChild(c);
+          });
+
+          feed.appendChild(panel);
+
+          // TOGGLE LOGIC
+          toggle.onclick = () => {
+              panel.style.display = panel.style.display === "none" ? "block" : "none";
+          };
       });
   });
 </script>
