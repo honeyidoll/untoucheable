@@ -15,7 +15,7 @@ body {
     font-family: 'Lora', serif;
 }
 
-/* HEADER — Lilac Grey + Dusty Berry */
+/* DESKTOP HEADER */
 #header {
     background: #D3C2CD;
     padding: 25px;
@@ -26,7 +26,85 @@ body {
     text-align: center;
 }
 
-/* POST TITLE */
+/* ------------------------------ */
+/* MOBILE PROFILE SECTION */
+/* ------------------------------ */
+
+#mobile-profile {
+    display: none;
+    padding: 20px;
+    text-align: center;
+    color: #2B2B23;
+}
+
+/* Profile photo placeholder */
+.profile-photo {
+    width: 90px;
+    height: 90px;
+    background: #D3C2CD;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+}
+
+/* Name */
+.profile-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    color: #D17089;
+}
+
+/* Stats row */
+.profile-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+/* BIO LINE */
+.profile-bio {
+    font-style: italic;
+    margin-bottom: 6px;
+    color: #2B2B23;
+}
+
+/* Spotify link */
+.profile-link {
+    font-size: 13px;
+    color: #6777B6;
+    margin-bottom: 15px;
+}
+
+/* Preview grid — ALWAYS 3 columns, equal spacing */
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 0 6px;
+}
+
+/* Preview boxes — 3:4 ratio */
+.preview-box {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 6px;
+    background-size: cover;
+    background-position: center;
+    background-color: #D3C2CD;
+    cursor: pointer;
+}
+
+/* Empty preview slots — completely invisible */
+.preview-box.empty {
+    background: none;
+    cursor: default;
+}
+
+/* ------------------------------ */
+/* IG POST STYLING */
+/* ------------------------------ */
+
 .post-title {
     font-family: 'Cormorant Garamond', serif;
     color: #2B2B23;
@@ -76,7 +154,7 @@ body {
     user-select: none;
 }
 
-/* IG NOTE STYLE */
+/* NOTES PANEL */
 .notes-panel {
     display: none;
     width: 260px;
@@ -95,25 +173,68 @@ body {
     font-weight: bold;
     margin-right: 6px;
 }
+
+/* ------------------------------ */
+/* RESPONSIVE BEHAVIOR */
+/* ------------------------------ */
+
+@media (max-width: 600px) {
+    #mobile-profile { display: block }
+    #header { display: none }
+    #feed { display: none }
+}
+
+@media (min-width: 601px) {
+    #mobile-profile { display: none }
+    #single-post { display: none }
+}
 </style>
 
 </head>
 <body>
 
+<!-- MOBILE PROFILE SECTION -->
+<div id="mobile-profile">
+    <div class="profile-photo"></div>
+    <div class="profile-name">Mona</div>
+
+    <div class="profile-stats">
+        <div>0 posts</div>
+        <div>127 works</div>
+        <div>10 interests</div>
+    </div>
+
+    <div class="profile-bio">SHE | HER | HIS 🌸🌸</div>
+
+    <div class="profile-link">open.spotify.com/user/315edpfbyt...</div>
+
+    <div class="preview-grid" id="preview-grid"></div>
+</div>
+
+<!-- DESKTOP HEADER -->
 <div id="header">Mona Lore</div>
 
+<!-- DESKTOP FEED -->
 <div id="feed"></div>
+
+<!-- MOBILE SINGLE POST VIEW -->
+<div id="single-post"></div>
 
 <script>
 fetch("https://honeyidoll.github.io/Photos/aphotos.json")
   .then(response => response.json())
   .then(data => {
+
+      /* ------------------------------ */
+      /* DESKTOP FEED (unchanged) */
+      /* ------------------------------ */
+
       const feed = document.getElementById("feed");
 
       Object.keys(data.groups).forEach(groupName => {
           const group = data.groups[groupName];
           const images = group.photos;
-          const notes = group.notes || []; // notes array
+          const notes = group.notes || [];
 
           // TITLE
           const title = document.createElement("div");
@@ -151,7 +272,7 @@ fetch("https://honeyidoll.github.io/Photos/aphotos.json")
           slider.appendChild(right);
           feed.appendChild(slider);
 
-          // IG-STYLE "View notes"
+          // NOTES TOGGLE
           const toggle = document.createElement("div");
           toggle.className = "notes-toggle";
           toggle.textContent = notes.length > 0 
@@ -181,12 +302,127 @@ fetch("https://honeyidoll.github.io/Photos/aphotos.json")
 
           feed.appendChild(panel);
 
-          // TOGGLE LOGIC
           toggle.onclick = () => {
               panel.style.display = panel.style.display === "none" ? "block" : "none";
           };
       });
-  });
+
+      /* ------------------------------ */
+      /* MOBILE PREVIEW GRID */
+/* ------------------------------ */
+
+      const previewGrid = document.getElementById("preview-grid");
+      const singlePost = document.getElementById("single-post");
+
+      const groupNames = Object.keys(data.groups);
+
+      // Add preview boxes
+      groupNames.forEach(groupName => {
+          const group = data.groups[groupName];
+          const firstImage = group.photos[0];
+
+          const box = document.createElement("div");
+          box.className = "preview-box";
+          box.style.backgroundImage = `url(https://honeyidoll.github.io/Photos/${firstImage})`;
+
+          box.onclick = () => openSinglePost(groupName, group);
+
+          previewGrid.appendChild(box);
+      });
+
+      // Fill empty slots to complete row of 3
+      const remainder = groupNames.length % 3;
+      if (remainder !== 0) {
+          const emptySlots = 3 - remainder;
+          for (let i = 0; i < emptySlots; i++) {
+              const empty = document.createElement("div");
+              empty.className = "preview-box empty";
+              previewGrid.appendChild(empty);
+          }
+      }
+
+      /* ------------------------------ */
+      /* MOBILE SINGLE POST VIEW */
+/* ------------------------------ */
+
+      function openSinglePost(groupName, group) {
+          const images = group.photos;
+          const notes = group.notes || [];
+
+          previewGrid.style.display = "none";
+          singlePost.innerHTML = "";
+
+          // TITLE
+          const title = document.createElement("div");
+          title.className = "post-title";
+          title.textContent = groupName;
+          singlePost.appendChild(title);
+
+          // SLIDER
+          const slider = document.createElement("div");
+          slider.className = "slider";
+
+          const left = document.createElement("button");
+          left.textContent = "‹";
+
+          const right = document.createElement("button");
+          right.textContent = "›";
+
+          const img = document.createElement("img");
+
+          let index = 0;
+          img.src = "https://honeyidoll.github.io/Photos/" + images[index];
+
+          left.onclick = () => {
+              if (index > 0) index--;
+              img.src = "https://honeyidoll.github.io/Photos/" + images[index];
+          };
+
+          right.onclick = () => {
+              if (index < images.length - 1) index++;
+              img.src = "https://honeyidoll.github.io/Photos/" + images[index];
+          };
+
+          slider.appendChild(left);
+          slider.appendChild(img);
+          slider.appendChild(right);
+          singlePost.appendChild(slider);
+
+          // NOTES TOGGLE
+          const toggle = document.createElement("div");
+          toggle.className = "notes-toggle";
+          toggle.textContent = notes.length > 0 
+              ? `View ${notes.length} note${notes.length > 1 ? "s" : ""}`
+              : "No notes";
+          singlePost.appendChild(toggle);
+
+          // NOTES PANEL
+          const panel = document.createElement("div");
+          panel.className = "notes-panel";
+
+          notes.forEach(n => {
+              const c = document.createElement("div");
+              c.className = "note";
+
+              const user = document.createElement("span");
+              user.className = "user";
+              user.textContent = "mona";
+
+              const text = document.createElement("span");
+              text.textContent = n;
+
+              c.appendChild(user);
+              c.appendChild(text);
+              panel.appendChild(c);
+          });
+
+          singlePost.appendChild(panel);
+
+          toggle.onclick = () => {
+              panel.style.display = panel.style.display === "none" ? "block" : "none";
+          };
+      }
+});
 </script>
 
 </body>
