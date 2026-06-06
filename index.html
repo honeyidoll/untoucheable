@@ -9,54 +9,72 @@
 <div id="feed"></div>
 
 <script>
+// FETCH JSON DATA
 fetch("https://honeyidoll.github.io/Photos/aphotos.json")
   .then(response => response.json())
   .then(data => {
       const feed = document.getElementById("feed");
 
+      // LOOP THROUGH EACH GROUP (each becomes its own post)
       Object.keys(data.groups).forEach(groupName => {
           const group = data.groups[groupName];
           const images = group.photos;
 
+          // CREATE POST CONTAINER
+          // (this is where layout for each post will go)
           const post = document.createElement("div");
-          post.style.marginBottom = "40px";
+          post.style.marginBottom = "40px"; // layout spacing between posts
 
+          // POST TITLE
           const title = document.createElement("h2");
           title.textContent = groupName + " (Group " + group.id + ")";
           post.appendChild(title);
 
+          // SLIDER CONTAINER
+          // (this is where slider layout will go)
           const slider = document.createElement("div");
           slider.style.display = "flex";
           slider.style.alignItems = "center";
           slider.style.gap = "10px";
 
+          // LEFT ARROW BUTTON
           const left = document.createElement("button");
           left.textContent = "<";
 
+          // RIGHT ARROW BUTTON
           const right = document.createElement("button");
           right.textContent = ">";
 
+          // IMAGE ELEMENT
+          // (this is where image styling/layout will go)
           const img = document.createElement("img");
           img.width = 200;
 
+          // SLIDER LOGIC
           let index = 0;
           img.src = "https://honeyidoll.github.io/Photos/" + images[index];
 
+          // LEFT ARROW CLICK
           left.onclick = () => {
               if (index > 0) index--;
               img.src = "https://honeyidoll.github.io/Photos/" + images[index];
           };
 
+          // RIGHT ARROW CLICK
           right.onclick = () => {
               if (index < images.length - 1) index++;
               img.src = "https://honeyidoll.github.io/Photos/" + images[index];
           };
 
+          // BUILD SLIDER
           slider.appendChild(left);
           slider.appendChild(img);
           slider.appendChild(right);
 
+          // ADD SLIDER TO POST
           post.appendChild(slider);
+
+          // ADD POST TO FEED
           feed.appendChild(post);
       });
   });
