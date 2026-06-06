@@ -58,10 +58,39 @@ body {
     margin-bottom: 6px;
 }
 
-.profile-link {
+/* SOCIAL BUTTONS — SIDE BY SIDE */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px auto;
+    width: 100%;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #F3E7D8;
+    padding: 6px 12px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #2B2B23;
     font-size: 13px;
-    color: #6777B6;
-    margin-bottom: 15px;
+    font-family: 'Lora', serif;
+    border: 1px solid #D3C2CD80;
+    transition: 0.2s ease;
+    white-space: nowrap;
+}
+
+.social-btn:hover {
+    background: #E8D9C8;
+}
+
+.social-icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.85;
 }
 
 /* CONTENT AREA — this is what changes */
@@ -157,9 +186,10 @@ body {
     </div>
 
     <div class="profile-bio">SHE | HER | HIS 🌸🌸</div>
-    <div class="profile-link">open.spotify.com/user/315edpfbyt...</div>
 
-    <!-- Separator -->
+    <!-- SOCIAL BUTTONS (LOADED FROM JSON) -->
+    <div id="social-container" class="social-links"></div>
+
     <hr style="border:0; border-top:1px solid #D3C2CD; width:80%; margin:15px auto;">
 </div>
 
@@ -171,6 +201,7 @@ body {
 const PHOTOS_JSON = "https://honeyidoll.github.io/Photos/aphotos.json";
 const WORKS_JSON = "https://honeyidoll.github.io/Works/aworks.json";
 const INTERESTS_JSON = "https://honeyidoll.github.io/Interests/ainterests.json";
+const SOCIAL_JSON = "https://honeyidoll.github.io/SocialMedia/SocialMedia.json";
 
 /* TABS */
 const postsTab = document.getElementById("posts-tab");
@@ -178,6 +209,30 @@ const worksTab = document.getElementById("works-tab");
 const interestsTab = document.getElementById("interests-tab");
 
 const contentArea = document.getElementById("content-area");
+
+/* LOAD SOCIAL MEDIA BUTTONS */
+function loadSocialButtons() {
+    fetch(SOCIAL_JSON)
+      .then(r => r.json())
+      .then(data => {
+          const container = document.getElementById("social-container");
+          container.innerHTML = "";
+
+          data.socials.forEach(item => {
+              const btn = document.createElement("a");
+              btn.className = "social-btn";
+              btn.href = item.link;
+              btn.target = "_blank";
+
+              btn.innerHTML = `
+                  <img src="${item.icon}" class="social-icon">
+                  <span>${item.name}</span>
+              `;
+
+              container.appendChild(btn);
+          });
+      });
+}
 
 /* SET ACTIVE TAB */
 function setActive(tab) {
@@ -358,7 +413,8 @@ fetch(INTERESTS_JSON)
       interestsTab.textContent = data.interests.length + " interests";
   });
 
-/* DEFAULT VIEW */
+/* INITIAL LOAD */
+loadSocialButtons();
 loadPosts();
 </script>
 
