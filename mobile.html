@@ -14,7 +14,7 @@ body {
     font-family: 'Lora', serif;
 }
 
-/* MOBILE PROFILE SECTION */
+/* PROFILE HEADER — stays fixed */
 #mobile-profile {
     padding: 20px;
     text-align: center;
@@ -38,9 +38,19 @@ body {
 .profile-stats {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 25px;
     margin: 10px 0;
     font-size: 14px;
+}
+
+.stat {
+    cursor: pointer;
+    color: #2B2B23;
+}
+
+.stat.active {
+    color: #D17089;
+    font-weight: bold;
 }
 
 .profile-bio {
@@ -52,6 +62,11 @@ body {
     font-size: 13px;
     color: #6777B6;
     margin-bottom: 15px;
+}
+
+/* CONTENT AREA — this is what changes */
+#content-area {
+    margin-top: 15px;
 }
 
 /* PREVIEW GRID */
@@ -72,7 +87,6 @@ body {
     cursor: pointer;
 }
 
-/* EMPTY SLOT — INVISIBLE */
 .preview-box.empty {
     background: none;
     cursor: default;
@@ -81,16 +95,15 @@ body {
 /* POST VIEW */
 .post-title {
     font-family: 'Cormorant Garamond', serif;
-    color: #2B2B23;
     font-size: 22px;
-    margin: 20px 0 10px;
     text-align: center;
+    margin: 20px 0 10px;
 }
 
 .slider {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     gap: 12px;
 }
 
@@ -108,144 +121,213 @@ body {
 }
 
 .notes-toggle {
-    margin-top: 8px;
-    text-align: left;
     width: 260px;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 14px;
+    margin: 10px auto;
     color: #6777B6;
     cursor: pointer;
 }
 
 .notes-panel {
-    display: none;
     width: 260px;
-    margin: 6px auto 25px;
+    margin: 0 auto 25px;
     font-family: 'Special Elite', monospace;
-    font-size: 14px;
+    display: none;
+}
+
+/* WORKS + INTERESTS LISTS */
+.list-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #D3C2CD;
+    font-size: 15px;
 }
 </style>
 
 </head>
 <body>
 
+<!-- FIXED PROFILE HEADER -->
 <div id="mobile-profile">
     <div class="profile-photo"></div>
     <div class="profile-name">Mona</div>
 
     <div class="profile-stats">
-        <div>0 posts</div>
-        <div>127 works</div>
-        <div>10 interests</div>
+        <div class="stat" id="posts-tab">0 posts</div>
+        <div class="stat" id="works-tab">0 works</div>
+        <div class="stat" id="interests-tab">0 interests</div>
     </div>
 
     <div class="profile-bio">SHE | HER | HIS 🌸🌸</div>
-
     <div class="profile-link">open.spotify.com/user/315edpfbyt...</div>
-
-    <div class="preview-grid" id="preview-grid"></div>
 </div>
 
-<div id="single-post"></div>
+<!-- ONLY THIS PART CHANGES -->
+<div id="content-area"></div>
 
 <script>
-fetch("https://honeyidoll.github.io/Photos/aphotos.json")
-  .then(r => r.json())
-  .then(data => {
+/* JSON SOURCES */
+const PHOTOS_JSON = "https://honeyidoll.github.io/Photos/aphotos.json";
+const WORKS_JSON = "https://honeyidoll.github.io/Works/works.json";
+const INTERESTS_JSON = "https://honeyidoll.github.io/Interests/interests.json";
 
-      const previewGrid = document.getElementById("preview-grid");
-      const singlePost = document.getElementById("single-post");
+/* TABS */
+const postsTab = document.getElementById("posts-tab");
+const worksTab = document.getElementById("works-tab");
+const interestsTab = document.getElementById("interests-tab");
 
-      const groupNames = Object.keys(data.groups);
+const contentArea = document.getElementById("content-area");
 
-      /* PREVIEW BOXES */
-      groupNames.forEach(name => {
-          const group = data.groups[name];
-          const firstImage = group.photos[0];
+/* SET ACTIVE TAB */
+function setActive(tab) {
+    postsTab.classList.remove("active");
+    worksTab.classList.remove("active");
+    interestsTab.classList.remove("active");
+    tab.classList.add("active");
+}
 
-          const box = document.createElement("div");
-          box.className = "preview-box";
-          box.style.backgroundImage = `url(https://honeyidoll.github.io/Photos/${firstImage})`;
+/* LOAD POSTS */
+function loadPosts() {
+    setActive(postsTab);
 
-          box.onclick = () => openSinglePost(name, group);
+    fetch(PHOTOS_JSON)
+      .then(r => r.json())
+      .then(data => {
+          const groups = Object.keys(data.groups);
+          postsTab.textContent = groups.length + " posts";
 
-          previewGrid.appendChild(box);
-      });
+          contentArea.innerHTML = "";
+          const grid = document.createElement("div");
+          grid.className = "preview-grid";
 
-      /* EMPTY SLOTS */
-      const remainder = groupNames.length % 3;
-      if (remainder !== 0) {
-          const emptySlots = 3 - remainder;
-          for (let i = 0; i < emptySlots; i++) {
-              const empty = document.createElement("div");
-              empty.className = "preview-box empty";
-              previewGrid.appendChild(empty);
-          }
-      }
+          groups.forEach(name => {
+              const group = data.groups[name];
+              const firstImage = group.photos[0];
 
-      /* SINGLE POST VIEW */
-      function openSinglePost(name, group) {
-          const images = group.photos;
-          const notes = group.notes || [];
+              const box = document.createElement("div");
+              box.className = "preview-box";
+              box.style.backgroundImage = `url(https://honeyidoll.github.io/Photos/${firstImage})`;
 
-          previewGrid.style.display = "none";
-          singlePost.innerHTML = "";
+              box.onclick = () => openSinglePost(name, group);
 
-          const title = document.createElement("div");
-          title.className = "post-title";
-          title.textContent = name;
-          singlePost.appendChild(title);
-
-          const slider = document.createElement("div");
-          slider.className = "slider";
-
-          const left = document.createElement("button");
-          left.textContent = "‹";
-
-          const right = document.createElement("button");
-          right.textContent = "›";
-
-          const img = document.createElement("img");
-          let index = 0;
-          img.src = `https://honeyidoll.github.io/Photos/${images[index]}`;
-
-          left.onclick = () => {
-              if (index > 0) index--;
-              img.src = `https://honeyidoll.github.io/Photos/${images[index]}`;
-          };
-
-          right.onclick = () => {
-              if (index < images.length - 1) index++;
-              img.src = `https://honeyidoll.github.io/Photos/${images[index]}`;
-          };
-
-          slider.appendChild(left);
-          slider.appendChild(img);
-          slider.appendChild(right);
-          singlePost.appendChild(slider);
-
-          const toggle = document.createElement("div");
-          toggle.className = "notes-toggle";
-          toggle.textContent = notes.length ? `View ${notes.length} notes` : "No notes";
-          singlePost.appendChild(toggle);
-
-          const panel = document.createElement("div");
-          panel.className = "notes-panel";
-
-          notes.forEach(n => {
-              const div = document.createElement("div");
-              div.innerHTML = `<strong>mona</strong> ${n}`;
-              panel.appendChild(div);
+              grid.appendChild(box);
           });
 
-          singlePost.appendChild(panel);
+          const remainder = groups.length % 3;
+          if (remainder !== 0) {
+              const emptySlots = 3 - remainder;
+              for (let i = 0; i < emptySlots; i++) {
+                  const empty = document.createElement("div");
+                  empty.className = "preview-box empty";
+                  grid.appendChild(empty);
+              }
+          }
 
-          toggle.onclick = () => {
-              panel.style.display = panel.style.display === "none" ? "block" : "none";
-          };
-      }
-});
+          contentArea.appendChild(grid);
+      });
+}
+
+/* SINGLE POST VIEW */
+function openSinglePost(name, group) {
+    contentArea.innerHTML = "";
+
+    const title = document.createElement("div");
+    title.className = "post-title";
+    title.textContent = name;
+    contentArea.appendChild(title);
+
+    const slider = document.createElement("div");
+    slider.className = "slider";
+
+    const left = document.createElement("button");
+    left.textContent = "‹";
+
+    const right = document.createElement("button");
+    right.textContent = "›";
+
+    const img = document.createElement("img");
+    let index = 0;
+    img.src = `https://honeyidoll.github.io/Photos/${group.photos[index]}`;
+
+    left.onclick = () => {
+        if (index > 0) index--;
+        img.src = `https://honeyidoll.github.io/Photos/${group.photos[index]}`;
+    };
+
+    right.onclick = () => {
+        if (index < group.photos.length - 1) index++;
+        img.src = `https://honeyidoll.github.io/Photos/${group.photos[index]}`;
+    };
+
+    slider.appendChild(left);
+    slider.appendChild(img);
+    slider.appendChild(right);
+    contentArea.appendChild(slider);
+
+    const toggle = document.createElement("div");
+    toggle.className = "notes-toggle";
+    toggle.textContent = group.notes?.length ? `View ${group.notes.length} notes` : "No notes";
+    contentArea.appendChild(toggle);
+
+    const panel = document.createElement("div");
+    panel.className = "notes-panel";
+
+    (group.notes || []).forEach(n => {
+        const div = document.createElement("div");
+        div.innerHTML = `<strong>mona</strong> ${n}`;
+        panel.appendChild(div);
+    });
+
+    contentArea.appendChild(panel);
+
+    toggle.onclick = () => {
+        panel.style.display = panel.style.display === "none" ? "block" : "none";
+    };
+}
+
+/* LOAD WORKS */
+function loadWorks() {
+    setActive(worksTab);
+
+    fetch(WORKS_JSON)
+      .then(r => r.json())
+      .then(data => {
+          worksTab.textContent = data.works.length + " works";
+
+          contentArea.innerHTML = "";
+          data.works.forEach(item => {
+              const div = document.createElement("div");
+              div.className = "list-item";
+              div.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a>`;
+              contentArea.appendChild(div);
+          });
+      });
+}
+
+/* LOAD INTERESTS */
+function loadInterests() {
+    setActive(interestsTab);
+
+    fetch(INTERESTS_JSON)
+      .then(r => r.json())
+      .then(data => {
+          interestsTab.textContent = data.interests.length + " interests";
+
+          contentArea.innerHTML = "";
+          data.interests.forEach(item => {
+              const div = document.createElement("div");
+              div.className = "list-item";
+              div.textContent = item;
+              contentArea.appendChild(div);
+          });
+      });
+}
+
+/* TAB CLICK EVENTS */
+postsTab.onclick = loadPosts;
+worksTab.onclick = loadWorks;
+interestsTab.onclick = loadInterests;
+
+/* DEFAULT VIEW */
+loadPosts();
 </script>
 
 </body>
