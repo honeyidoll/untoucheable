@@ -187,9 +187,30 @@ body {
 
     <div class="profile-bio">SHE | HER | HIS 🌸🌸</div>
 
-    <!-- SOCIAL BUTTONS (LOADED FROM JSON) -->
-    <div id="social-container" class="social-links"></div>
+    <!-- SOCIAL BUTTONS (SIDE BY SIDE) -->
+    <div class="social-links">
+        <a class="social-btn" href="https://open.spotify.com/user/315edpfbyt..." target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/spotify.svg" class="social-icon">
+            <span>spotify</span>
+        </a>
 
+        <a class="social-btn" href="https://twitter.com/YOURUSERNAME" target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" class="social-icon">
+            <span>twitter</span>
+        </a>
+
+        <a class="social-btn" href="https://instagram.com/YOURUSERNAME" target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" class="social-icon">
+            <span>instagram</span>
+        </a>
+
+        <a class="social-btn" href="https://youtube.com/@YOURCHANNEL" target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" class="social-icon">
+            <span>youtube</span>
+        </a>
+    </div>
+
+    <!-- Separator -->
     <hr style="border:0; border-top:1px solid #D3C2CD; width:80%; margin:15px auto;">
 </div>
 
@@ -201,7 +222,6 @@ body {
 const PHOTOS_JSON = "https://honeyidoll.github.io/Photos/aphotos.json";
 const WORKS_JSON = "https://honeyidoll.github.io/Works/aworks.json";
 const INTERESTS_JSON = "https://honeyidoll.github.io/Interests/ainterests.json";
-const SOCIAL_JSON = "https://honeyidoll.github.io/SocialMedia/SocialMedia.json";
 
 /* TABS */
 const postsTab = document.getElementById("posts-tab");
@@ -209,30 +229,6 @@ const worksTab = document.getElementById("works-tab");
 const interestsTab = document.getElementById("interests-tab");
 
 const contentArea = document.getElementById("content-area");
-
-/* LOAD SOCIAL MEDIA BUTTONS */
-function loadSocialButtons() {
-    fetch(SOCIAL_JSON)
-      .then(r => r.json())
-      .then(data => {
-          const container = document.getElementById("social-container");
-          container.innerHTML = "";
-
-          data.socials.forEach(item => {
-              const btn = document.createElement("a");
-              btn.className = "social-btn";
-              btn.href = item.link;
-              btn.target = "_blank";
-
-              btn.innerHTML = `
-                  <img src="${item.icon}" class="social-icon">
-                  <span>${item.name}</span>
-              `;
-
-              container.appendChild(btn);
-          });
-      });
-}
 
 /* SET ACTIVE TAB */
 function setActive(tab) {
@@ -413,8 +409,7 @@ fetch(INTERESTS_JSON)
       interestsTab.textContent = data.interests.length + " interests";
   });
 
-/* INITIAL LOAD */
-loadSocialButtons();
+/* DEFAULT VIEW */
 loadPosts();
 </script>
 
