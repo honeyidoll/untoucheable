@@ -40,16 +40,16 @@ fetch("https://honeyidoll.github.io/Photos/aphotos.json")
           img.width = 200;
 
           let index = 0;
-          img.src = "https://honeyidoll.github.io/Photos/photos/" + images[index];
+          img.src = "https://honeyidoll.github.io/Photos/" + images[index];
 
           left.onclick = () => {
               if (index > 0) index--;
-              img.src = "https://honeyidoll.github.io/Photos/photos/" + images[index];
+              img.src = "https://honeyidoll.github.io/Photos/" + images[index];
           };
 
           right.onclick = () => {
               if (index < images.length - 1) index++;
-              img.src = "https://honeyidoll.github.io/Photos/photos/" + images[index];
+              img.src = "https://honeyidoll.github.io/Photos/" + images[index];
           };
 
           slider.appendChild(left);
