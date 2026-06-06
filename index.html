@@ -6,15 +6,28 @@
 <title>Mona Lore</title>
 
 <script>
-// Decide which layout to load
-window.onload = () => {
+// Function to decide which layout to load
+function routeLayout() {
     const isMobile = window.innerWidth <= 600;
 
-    if (isMobile) {
+    // Prevent infinite redirect loops
+    const current = window.location.pathname;
+
+    if (isMobile && !current.includes("mobile.html")) {
         window.location.href = "mobile.html";
-    } else {
+    } 
+    else if (!isMobile && !current.includes("desktop.html")) {
         window.location.href = "desktop.html";
     }
+}
+
+window.onload = routeLayout;
+
+// Re-check layout when window is resized
+window.onresize = () => {
+    // Add a small delay so it doesn't fire too often
+    clearTimeout(window._resizeTimer);
+    window._resizeTimer = setTimeout(routeLayout, 150);
 };
 </script>
 
