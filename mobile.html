@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -8,670 +7,1058 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Lora&family=Special+Elite&display=swap" rel="stylesheet">
 
 <style>
-body {
-    background: #EFCE7B20;
-    margin: 0;
-    font-family: 'Lora', serif;
+
+/* =========================
+   THEME SYSTEM
+========================= */
+
+:root{
+    /* DAY MODE */
+    --bg:#ffffff;
+    --text:#111111;
+    --accent:#D17089;
+    --card:#F3E7D8;
+    --card-hover:#E8D9C8;
+    --border:#D3C2CD80;
+    --secondary:#6777B6;
 }
 
-/* PROFILE HEADER — stays fixed */
-#mobile-profile {
-    padding: 20px;
-    text-align: center;
-    color: #2B2B23;
+body.dark{
+    /* NIGHT MODE */
+    --bg:#000000;
+    --text:#ffffff;
+    --accent:#FFB347;
+    --card:#0F1C3D;
+    --card-hover:#182A5A;
+    --border:#2F447A;
+    --secondary:#FFD36B;
 }
 
-.profile-photo {
-    width: 90px;
-    height: 90px;
-    background: #D3C2CD;
-    border-radius: 50%;
-    margin: 0;
+/* THEME TOGGLE */
+
+#theme-toggle{
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:9999;
+
+    width:42px;
+    height:42px;
+
+    border:none;
+    border-radius:50%;
+
+    cursor:pointer;
+
+    background:#ffffff;
+    color:#D17089;
+
+    font-size:18px;
+    font-weight:bold;
+
+    transition:.3s;
+}
+
+body.dark #theme-toggle{
+    background:#0F1C3D;
+    color:#FFB347;
+}
+
+/* =========================
+   ORIGINAL STYLES
+========================= */
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    margin:0;
+    font-family:'Lora', serif;
+    transition:.3s ease;
+}
+
+/* PROFILE HEADER */
+
+#mobile-profile{
+    padding:20px;
+    text-align:center;
+    color:var(--text);
+}
+
+.profile-photo{
+    width:90px;
+    height:90px;
+    background:#D3C2CD;
+    border-radius:50%;
+    margin:0;
 }
 
 /* WRAPPER HOLDS THE GOLD RING */
-.profile-photo-wrapper {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 10px;
-    border-radius: 50%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.profile-photo-wrapper{
+    width:100px;
+    height:100px;
+    margin:0 auto 10px;
+    border-radius:50%;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 /* INVISIBLE BUTTON ON TOP */
-.photo-button-layer {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 10;
-    background: transparent;
+
+.photo-button-layer{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    cursor:pointer;
+    z-index:10;
+    background:transparent;
 }
 
-/* Solid gold ring */
-.profile-photo-wrapper::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 3px solid #d4af37;
-    box-shadow: 0 0 6px #d4af37aa;
+/* GOLD RING */
+
+.profile-photo-wrapper::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:3px solid #d4af37;
+    box-shadow:0 0 6px #d4af37aa;
 }
 
-.profile-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    color: #D17089;
+.profile-name{
+    font-family:'Cormorant Garamond', serif;
+    font-size:26px;
+    color:var(--accent);
 }
 
-.profile-stats {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    margin: 10px 0;
-    font-size: 14px;
+.profile-stats{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    margin:10px 0;
+    font-size:14px;
 }
 
-.stat {
-    cursor: pointer;
-    color: #2B2B23;
+.stat{
+    cursor:pointer;
+    color:var(--text);
 }
 
-.stat.active {
-    color: #D17089;
-    font-weight: bold;
+.stat.active{
+    color:var(--accent);
+    font-weight:bold;
 }
 
-.profile-bio {
-    font-style: italic;
-    margin-bottom: 6px;
+.profile-bio{
+    font-style:italic;
+    margin-bottom:6px;
 }
 
-/* SOCIAL BUTTONS — SIDE BY SIDE */
-.social-links {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 15px auto;
-    width: 100%;
+/* SOCIAL BUTTONS */
+
+.social-links{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:15px auto;
+    width:100%;
 }
 
-.social-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: #F3E7D8;
-    padding: 6px 12px;
-    border-radius: 14px;
-    text-decoration: none;
-    color: #2B2B23;
-    font-size: 13px;
-    font-family: 'Lora', serif;
-    border: 1px solid #D3C2CD80;
-    transition: 0.2s ease;
-    white-space: nowrap;
+.social-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+    background:var(--card);
+
+    padding:6px 12px;
+    border-radius:14px;
+
+    text-decoration:none;
+
+    color:var(--text);
+
+    font-size:13px;
+    font-family:'Lora', serif;
+
+    border:1px solid var(--border);
+
+    transition:.2s ease;
+    white-space:nowrap;
 }
 
-.social-btn:hover {
-    background: #E8D9C8;
+.social-btn:hover{
+    background:var(--card-hover);
 }
 
-.social-icon {
-    width: 14px;
-    height: 14px;
-    opacity: 0.85;
+.social-icon{
+    width:14px;
+    height:14px;
+    opacity:.85;
 }
 
 /* + BUTTON */
-.social-more-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #F3E7D8;
-    padding: 6px 12px;
-    border-radius: 14px;
-    border: 1px solid #D3C2CD80;
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.2s ease;
+
+.social-more-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:var(--card);
+
+    padding:6px 12px;
+
+    border-radius:14px;
+
+    border:1px solid var(--border);
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    color:var(--text);
+
+    transition:.2s ease;
 }
 
-.social-more-btn:hover {
-    background: #E8D9C8;
+.social-more-btn:hover{
+    background:var(--card-hover);
 }
 
-/* BLUR OVERLAY (SOCIAL MENU) */
-#overlay-blur {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(0px);
-    background: rgba(0,0,0,0);
-    opacity: 0;
-    pointer-events: none;
-    transition: backdrop-filter 0.3s ease, background 0.3s ease, opacity 0.3s ease;
-    z-index: 50;
+/* BLUR OVERLAY */
+
+#overlay-blur{
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    backdrop-filter:blur(0px);
+    background:rgba(0,0,0,0);
+
+    opacity:0;
+    pointer-events:none;
+
+    transition:
+        backdrop-filter .3s ease,
+        background .3s ease,
+        opacity .3s ease;
+
+    z-index:50;
 }
 
-#overlay-blur.active {
-    backdrop-filter: blur(6px);
-    background: rgba(0,0,0,0.15);
-    opacity: 1;
-    pointer-events: auto;
+#overlay-blur.active{
+    backdrop-filter:blur(6px);
+    background:rgba(0,0,0,.15);
+    opacity:1;
+    pointer-events:auto;
 }
-
 /* EXPANDED SOCIAL MENU */
-#social-expanded-menu {
-    position: fixed;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: #F3E7D8;
-    padding: 18px;
-    border-radius: 16px;
-    border: 1px solid #D3C2CD80;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    z-index: 100;
 
-    display: grid;
-    grid-template-columns: repeat(3, auto);
-    gap: 10px;
-    justify-content: center;
+#social-expanded-menu{
+    position:fixed;
+
+    bottom:60px;
+    left:50%;
+
+    transform:translateX(-50%) translateY(20px);
+
+    background:var(--card);
+
+    padding:18px;
+
+    border-radius:16px;
+
+    border:1px solid var(--border);
+
+    box-shadow:0 6px 20px rgba(0,0,0,.15);
+
+    opacity:0;
+    pointer-events:none;
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+
+    z-index:100;
+
+    display:grid;
+    grid-template-columns:repeat(3, auto);
+    gap:10px;
+    justify-content:center;
 }
 
-#social-expanded-menu.active {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
+#social-expanded-menu.active{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateX(-50%) translateY(0);
 }
 
-#social-expanded-menu .social-btn {
-    width: 90px;
-    justify-content: center;
-    text-align: center;
-    padding: 8px 10px;
+#social-expanded-menu .social-btn{
+    width:90px;
+    justify-content:center;
+    text-align:center;
+    padding:8px 10px;
 }
 
 /* CONTENT AREA */
-#content-area {
-    margin-top: 15px;
+
+#content-area{
+    margin-top:15px;
 }
 
 /* PREVIEW GRID */
-.preview-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    padding: 0 6px;
+
+.preview-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+    padding:0 6px;
 }
 
-.preview-box {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    border-radius: 6px;
-    background-size: cover;
-    background-position: center;
-    background-color: #D3C2CD;
-    cursor: pointer;
+.preview-box{
+    width:100%;
+    aspect-ratio:3 / 4;
+
+    border-radius:6px;
+
+    background-size:cover;
+    background-position:center;
+
+    background-color:#D3C2CD;
+
+    cursor:pointer;
 }
 
-.preview-box.empty {
-    background: none;
-    cursor: default;
+.preview-box.empty{
+    background:none;
+    cursor:default;
 }
 
 /* POST VIEW */
-.post-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    text-align: center;
-    margin: 20px 0 10px;
+
+.post-title{
+    font-family:'Cormorant Garamond', serif;
+    font-size:22px;
+    text-align:center;
+    margin:20px 0 10px;
+    color:var(--text);
 }
 
-.slider {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
+.slider{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
 }
 
-.slider button {
-    background: none;
-    border: none;
-    font-size: 28px;
-    color: #6777B680;
-    cursor: pointer;
+.slider button{
+    background:none;
+    border:none;
+
+    font-size:28px;
+
+    color:var(--secondary);
+
+    cursor:pointer;
 }
 
-.slider img {
-    width: 260px;
-    border-radius: 12px;
+.slider img{
+    width:260px;
+    border-radius:12px;
 }
 
-.notes-toggle {
-    width: 260px;
-    margin: 10px auto;
-    color: #6777B6;
-    cursor: pointer;
+.notes-toggle{
+    width:260px;
+    margin:10px auto;
+
+    color:var(--secondary);
+
+    cursor:pointer;
 }
 
-.notes-panel {
-    width: 260px;
-    margin: 0 auto 25px;
-    font-family: 'Special Elite', monospace;
-    display: none;
+.notes-panel{
+    width:260px;
+    margin:0 auto 25px;
+
+    font-family:'Special Elite', monospace;
+
+    color:var(--text);
+
+    display:none;
 }
 
-/* WORKS + INTERESTS LISTS */
-.list-item {
-    padding: 12px 20px;
-    border-bottom: 1px solid #D3C2CD;
-    font-size: 15px;
+/* WORKS + INTERESTS */
+
+.list-item{
+    padding:12px 20px;
+
+    border-bottom:1px solid var(--border);
+
+    font-size:15px;
+
+    color:var(--text);
 }
 
-/* LETTER POPUP OVERLAY */
-#letter-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(0px);
-    background: rgba(0,0,0,0);
-    opacity: 0;
-    pointer-events: none;
-    transition: backdrop-filter 0.3s ease, background 0.3s ease, opacity 0.3s ease;
-    z-index: 200;
+/* LETTER OVERLAY */
+
+#letter-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    backdrop-filter:blur(0px);
+
+    background:rgba(0,0,0,0);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:
+        backdrop-filter .3s ease,
+        background .3s ease,
+        opacity .3s ease;
+
+    z-index:200;
 }
 
-#letter-overlay.active {
-    backdrop-filter: blur(6px);
-    background: rgba(0,0,0,0.15);
-    opacity: 1;
-    pointer-events: auto;
+#letter-overlay.active{
+    backdrop-filter:blur(6px);
+    background:rgba(0,0,0,.15);
+
+    opacity:1;
+
+    pointer-events:auto;
 }
 
 /* LETTER POPUP */
-#letter-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -40%);
-    width: 80%;
-    max-width: 300px;
-    background: rgba(243, 231, 216, 0.85);
-    backdrop-filter: blur(12px) saturate(140%);
-    padding: 20px;
-    border-radius: 18px;
-    border: 1px solid #D3C2CD80;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.25);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    z-index: 250;
+
+#letter-popup{
+    position:fixed;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-40%);
+
+    width:80%;
+    max-width:300px;
+
+    background:var(--card);
+
+    backdrop-filter:blur(12px) saturate(140%);
+
+    padding:20px;
+
+    border-radius:18px;
+
+    border:1px solid var(--border);
+
+    box-shadow:0 8px 28px rgba(0,0,0,.25);
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+
+    z-index:250;
 }
 
-#letter-popup.active {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translate(-50%, -50%);
+#letter-popup.active{
+    opacity:1;
+    pointer-events:auto;
+    transform:translate(-50%,-50%);
 }
 
-.letter-content {
-    font-family: 'Special Elite', monospace;
-    color: #2B2B23;
-    text-align: center;
+.letter-content{
+    font-family:'Special Elite', monospace;
+    color:var(--text);
+    text-align:center;
 }
+
 </style>
-
 </head>
+
 <body>
 
+<!-- THEME TOGGLE -->
+
+<button id="theme-toggle">☾</button>
+
 <!-- FIXED PROFILE HEADER -->
+
 <div id="mobile-profile">
+
     <div class="profile-photo-wrapper">
         <div class="profile-photo"></div>
         <div class="photo-button-layer" id="photo-button"></div>
     </div>
-    
+
     <div class="profile-name">Mona</div>
 
     <div class="profile-stats">
-        <div class="stat" id="posts-tab">0 posts</div>
-        <div class="stat" id="works-tab">0 works</div>
-        <div class="stat" id="interests-tab">0 interests</div>
+        <div class="stat" id="posts-tab"> </div>
+        <div class="stat" id="works-tab"> </div>
+        <div class="stat" id="interests-tab"> </div>
     </div>
 
-    <div class="profile-bio">SEE GOOD IN ALL THINGS ﾒ૦ﾒ૦💋</div>
+    <div class="profile-bio">
+        SEE GOOD IN ALL THINGS ﾒ૦ﾒ૦💋
+    </div>
 
-    <!-- SOCIAL BUTTONS -->
     <div class="social-links" id="social-links">
 
-        <!-- MAIN 3 BUTTONS -->
-        <a class="social-btn" href="https://open.spotify.com/user/315edpfbytpocmmppzisjji2td6y?si=DiitzBRxQcSH8hsQhV8xLw&nd=1&dlsi=5ec9a2cf13124934" target="_blank">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/spotify.svg" class="social-icon">
+        <a class="social-btn"
+           href="https://open.spotify.com/user/315edpfbytpocmmppzisjji2td6y?si=DiitzBRxQcSH8hsQhV8xLw&nd=1&dlsi=5ec9a2cf13124934"
+           target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/spotify.svg"
+                 class="social-icon">
             <span>spotify</span>
         </a>
 
-        <a class="social-btn" href="https://x.com/honey_idoll?s=21" target="_blank">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" class="social-icon">
+        <a class="social-btn"
+           href="https://x.com/honey_idoll?s=21"
+           target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg"
+                 class="social-icon">
             <span>twitter</span>
         </a>
 
-        <a class="social-btn" href="https://instagram.com/YOURUSERNAME" target="_blank">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" class="social-icon">
+        <a class="social-btn"
+           href="https://instagram.com/YOURUSERNAME"
+           target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg"
+                 class="social-icon">
             <span>instagram</span>
         </a>
 
-        <!-- + BUTTON -->
-        <div id="social-more-btn" class="social-more-btn">+</div>
+        <div id="social-more-btn"
+             class="social-more-btn">
+             +
+        </div>
 
-        <!-- HIDDEN EXTRA BUTTONS -->
-        <a class="social-btn" href="https://www.youtube.com/@slushiest02?si=L_4Jncg1hB2sTfPX" target="_blank">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" class="social-icon">
+        <a class="social-btn"
+           href="https://www.youtube.com/@slushiest02?si=L_4Jncg1hB2sTfPX"
+           target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"
+                 class="social-icon">
             <span>youtube</span>
         </a>
 
-        <a class="social-btn" href="https://discord.gg/YOURSERVER" target="_blank">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg" class="social-icon">
+        <a class="social-btn"
+           href="https://discord.gg/YOURSERVER"
+           target="_blank">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg"
+                 class="social-icon">
             <span>discord</span>
         </a>
 
     </div>
 
-    <hr style="border:0; border-top:1px solid #D3C2CD; width:80%; margin:15px auto;">
+    <hr style="
+        border:0;
+        border-top:1px solid var(--border);
+        width:80%;
+        margin:15px auto;
+    ">
+
 </div>
 
 <!-- CONTENT -->
+
 <div id="content-area"></div>
 
-<!-- SOCIAL MENU OVERLAY -->
+<!-- SOCIAL OVERLAY -->
+
 <div id="overlay-blur"></div>
 
-<!-- EXPANDED SOCIAL MENU -->
+<!-- SOCIAL MENU -->
+
 <div id="social-expanded-menu"></div>
 
 <!-- LETTER OVERLAY -->
+
 <div id="letter-overlay"></div>
 
 <!-- LETTER POPUP -->
+
 <div id="letter-popup">
     <div class="letter-content" id="letter-content"></div>
 </div>
 
 <script>
+
 /* JSON SOURCES */
-const PHOTOS_JSON = "https://honeyidoll.github.io/Photos/aphotos.json";
-const WORKS_JSON = "https://honeyidoll.github.io/Works/aworks.json";
-const INTERESTS_JSON = "https://honeyidoll.github.io/Interests/ainterests.json";
-const LETTER_JSON = "letter.json";
 
+const PHOTOS_JSON =
+"https://honeyidoll.github.io/Photos/aphotos.json";
+
+const WORKS_JSON =
+"https://honeyidoll.github.io/Works/aworks.json";
+
+const INTERESTS_JSON =
+"https://honeyidoll.github.io/Interests/ainterests.json";
+
+const LETTER_JSON =
+"letter.json";
+
+/* THEME TOGGLE */
+
+const themeToggle =
+document.getElementById("theme-toggle");
+
+themeToggle.addEventListener("click", () => {
+
+    document.body.classList.toggle("dark");
+
+    if(document.body.classList.contains("dark")){
+        themeToggle.textContent = "☀";
+        localStorage.setItem("theme","dark");
+    }else{
+        themeToggle.textContent = "☾";
+        localStorage.setItem("theme","light");
+    }
+
+});
+
+if(localStorage.getItem("theme")==="dark"){
+    document.body.classList.add("dark");
+    themeToggle.textContent="☀";
+}
 /* TABS */
-const postsTab = document.getElementById("posts-tab");
-const worksTab = document.getElementById("works-tab");
-const interestsTab = document.getElementById("interests-tab");
 
-const contentArea = document.getElementById("content-area");
+const postsTab =
+document.getElementById("posts-tab");
+
+const worksTab =
+document.getElementById("works-tab");
+
+const interestsTab =
+document.getElementById("interests-tab");
+
+const contentArea =
+document.getElementById("content-area");
 
 /* SET ACTIVE TAB */
-function setActive(tab) {
+
+function setActive(tab){
+
     postsTab.classList.remove("active");
     worksTab.classList.remove("active");
     interestsTab.classList.remove("active");
+
     tab.classList.add("active");
 }
 
 /* LOAD POSTS */
-function loadPosts() {
+
+function loadPosts(){
+
     setActive(postsTab);
 
     fetch(PHOTOS_JSON)
-      .then(r => r.json())
-      .then(data => {
-          const groups = Object.keys(data.groups);
-          postsTab.textContent = groups.length + " posts";
+    .then(r => r.json())
+    .then(data => {
 
-          contentArea.innerHTML = "";
-          const grid = document.createElement("div");
-          grid.className = "preview-grid";
+        const groups =
+        Object.keys(data.groups);
 
-          groups.forEach(name => {
-              const group = data.groups[name];
-              const firstImage = group.photos[0];
+        postsTab.textContent =
+        groups.length + " posts";
 
-              const box = document.createElement("div");
-              box.className = "preview-box";
-              box.style.backgroundImage = `url(https://honeyidoll.github.io/Photos/${firstImage})`;
+        contentArea.innerHTML = "";
 
-              box.onclick = () => openSinglePost(name, group);
+        const grid =
+        document.createElement("div");
 
-              grid.appendChild(box);
-          });
+        grid.className =
+        "preview-grid";
 
-          const remainder = groups.length % 3;
-          if (remainder !== 0) {
-              const emptySlots = 3 - remainder;
-              for (let i = 0; i < emptySlots; i++) {
-                  const empty = document.createElement("div");
-                  empty.className = "preview-box empty";
-                  grid.appendChild(empty);
-              }
-          }
+        groups.forEach(name => {
 
-          contentArea.appendChild(grid);
-      });
+            const group =
+            data.groups[name];
+
+            const firstImage =
+            group.photos[0];
+
+            const box =
+            document.createElement("div");
+
+            box.className =
+            "preview-box";
+
+            box.style.backgroundImage =
+            `url(https://honeyidoll.github.io/Photos/${firstImage})`;
+
+            box.onclick = () =>
+            openSinglePost(name, group);
+
+            grid.appendChild(box);
+        });
+
+        const remainder =
+        groups.length % 3;
+
+        if(remainder !== 0){
+
+            const emptySlots =
+            3 - remainder;
+
+            for(let i=0;i<emptySlots;i++){
+
+                const empty =
+                document.createElement("div");
+
+                empty.className =
+                "preview-box empty";
+
+                grid.appendChild(empty);
+            }
+        }
+
+        contentArea.appendChild(grid);
+    });
 }
 
 /* SINGLE POST VIEW */
-function openSinglePost(name, group) {
+
+function openSinglePost(name, group){
+
     contentArea.innerHTML = "";
 
-    const title = document.createElement("div");
-    title.className = "post-title";
-    title.textContent = name;
+    const title =
+    document.createElement("div");
+
+    title.className =
+    "post-title";
+
+    title.textContent =
+    name;
+
     contentArea.appendChild(title);
 
-    const slider = document.createElement("div");
-    slider.className = "slider";
+    const slider =
+    document.createElement("div");
 
-    const left = document.createElement("button");
+    slider.className =
+    "slider";
+
+    const left =
+    document.createElement("button");
+
     left.textContent = "‹";
 
-    const right = document.createElement("button");
+    const right =
+    document.createElement("button");
+
     right.textContent = "›";
 
-    const img = document.createElement("img");
+    const img =
+    document.createElement("img");
+
     let index = 0;
-    img.src = `https://honeyidoll.github.io/Photos/${group.photos[index]}`;
+
+    img.src =
+    `https://honeyidoll.github.io/Photos/${group.photos[index]}`;
 
     left.onclick = () => {
-        if (index > 0) index--;
-        img.src = `https://honeyidoll.github.io/Photos/${group.photos[index]}`;
+
+        if(index > 0) index--;
+
+        img.src =
+        `https://honeyidoll.github.io/Photos/${group.photos[index]}`;
     };
 
     right.onclick = () => {
-        if (index < group.photos.length - 1) index++;
-        img.src = `https://honeyidoll.github.io/Photos/${group.photos[index]}`;
+
+        if(index < group.photos.length - 1)
+        index++;
+
+        img.src =
+        `https://honeyidoll.github.io/Photos/${group.photos[index]}`;
     };
 
     slider.appendChild(left);
     slider.appendChild(img);
     slider.appendChild(right);
+
     contentArea.appendChild(slider);
 
-    const toggle = document.createElement("div");
-    toggle.className = "notes-toggle";
-    toggle.textContent = group.notes?.length ? `View ${group.notes.length} notes` : "No notes";
+    const toggle =
+    document.createElement("div");
+
+    toggle.className =
+    "notes-toggle";
+
+    toggle.textContent =
+    group.notes?.length
+    ? `View ${group.notes.length} notes`
+    : "No notes";
+
     contentArea.appendChild(toggle);
 
-    const panel = document.createElement("div");
-    panel.className = "notes-panel";
+    const panel =
+    document.createElement("div");
+
+    panel.className =
+    "notes-panel";
 
     (group.notes || []).forEach(n => {
-        const div = document.createElement("div");
-        div.innerHTML = `<strong>mona</strong> ${n}`;
+
+        const div =
+        document.createElement("div");
+
+        div.innerHTML =
+        `<strong>mona</strong> ${n}`;
+
         panel.appendChild(div);
     });
 
     contentArea.appendChild(panel);
 
     toggle.onclick = () => {
-        panel.style.display = panel.style.display === "none" ? "block" : "none";
+
+        panel.style.display =
+        panel.style.display === "none"
+        ? "block"
+        : "none";
     };
 }
 
 /* LOAD WORKS */
-function loadWorks() {
+
+function loadWorks(){
+
     setActive(worksTab);
 
     fetch(WORKS_JSON)
-      .then(r => r.json())
-      .then(data => {
-          worksTab.textContent = data.works.length + " works";
+    .then(r => r.json())
+    .then(data => {
 
-          contentArea.innerHTML = "";
-          data.works.forEach(item => {
-              const div = document.createElement("div");
-              div.className = "list-item";
+        worksTab.textContent =
+        data.works.length + " works";
 
-              div.innerHTML = `
-                  <div style="font-weight:bold; color:#2B2B23;">${item.title}</div>
-                  <div style="font-size:13px; opacity:0.8; margin:4px 0;">${item.description}</div>
-                  <a href="https://honeyidoll.github.io/Works/${item.file}" target="_blank" style="color:#6777B6;">
-                      Open
-                  </a>
-              `;
+        contentArea.innerHTML = "";
 
-              contentArea.appendChild(div);
-          });
-      });
+        data.works.forEach(item => {
+
+            const div =
+            document.createElement("div");
+
+            div.className =
+            "list-item";
+
+            div.innerHTML = `
+                <div style="font-weight:bold;color:var(--text);">
+                    ${item.title}
+                </div>
+
+                <div style="font-size:13px;opacity:.8;margin:4px 0;">
+                    ${item.description}
+                </div>
+
+                <a href="https://honeyidoll.github.io/Works/${item.file}"
+                   target="_blank"
+                   style="color:var(--secondary);">
+                   Open
+                </a>
+            `;
+
+            contentArea.appendChild(div);
+        });
+    });
 }
 
 /* LOAD INTERESTS */
-function loadInterests() {
+
+function loadInterests(){
+
     setActive(interestsTab);
 
     fetch(INTERESTS_JSON)
-      .then(r => r.json())
-      .then(data => {
-          interestsTab.textContent = data.interests.length + " interests";
+    .then(r => r.json())
+    .then(data => {
 
-          contentArea.innerHTML = "";
-          data.interests.forEach(item => {
-              const div = document.createElement("div");
-              div.className = "list-item";
+        interestsTab.textContent =
+        data.interests.length + " interests";
 
-              div.innerHTML = `
-                  <div style="font-weight:bold; color:#2B2B23;">${item.title}</div>
-                  <div style="font-size:13px; opacity:0.8; margin:4px 0;">${item.description}</div>
-                  <a href="${item.link}" target="_blank" style="color:#6777B6;">
-                      Visit
-                  </a>
-              `;
+        contentArea.innerHTML = "";
 
-              contentArea.appendChild(div);
-          });
-      });
+        data.interests.forEach(item => {
+
+            const div =
+            document.createElement("div");
+
+            div.className =
+            "list-item";
+
+            div.innerHTML = `
+                <div style="font-weight:bold;color:var(--text);">
+                    ${item.title}
+                </div>
+
+                <div style="font-size:13px;opacity:.8;margin:4px 0;">
+                    ${item.description}
+                </div>
+
+                <a href="${item.link}"
+                   target="_blank"
+                   style="color:var(--secondary);">
+                   Visit
+                </a>
+            `;
+
+            contentArea.appendChild(div);
+        });
+    });
 }
 
-/* TAB CLICK EVENTS */
+/* TAB EVENTS */
+
 postsTab.onclick = loadPosts;
 worksTab.onclick = loadWorks;
 interestsTab.onclick = loadInterests;
 
 /* PRELOAD COUNTS */
+
 fetch(WORKS_JSON)
-  .then(r => r.json())
-  .then(data => {
-      worksTab.textContent = data.works.length + " works";
-  });
+.then(r => r.json())
+.then(data => {
+    worksTab.textContent =
+    data.works.length + " works";
+});
 
 fetch(INTERESTS_JSON)
-  .then(r => r.json())
-  .then(data => {
-      interestsTab.textContent = data.interests.length + " interests";
-  });
+.then(r => r.json())
+.then(data => {
+    interestsTab.textContent =
+    data.interests.length + " interests";
+});
 
 /* DEFAULT VIEW */
+
 loadPosts();
 
-/* SOCIAL MENU EXPANSION */
+/* SOCIAL MENU */
+
 window.onload = () => {
-    const socialLinksContainer = document.getElementById("social-links");
-    const moreBtn = document.getElementById("social-more-btn");
-    const expandedMenu = document.getElementById("social-expanded-menu");
-    const overlay = document.getElementById("overlay-blur");
 
-    // Collect ALL social buttons except the + button
-    const allButtons = Array.from(socialLinksContainer.querySelectorAll(".social-btn"));
+    const socialLinksContainer =
+    document.getElementById("social-links");
 
-    // Clone ALL into expanded menu
+    const moreBtn =
+    document.getElementById("social-more-btn");
+
+    const expandedMenu =
+    document.getElementById("social-expanded-menu");
+
+    const overlay =
+    document.getElementById("overlay-blur");
+
+    const allButtons =
+    Array.from(
+        socialLinksContainer.querySelectorAll(".social-btn")
+    );
+
     allButtons.forEach(btn => {
-        expandedMenu.appendChild(btn.cloneNode(true));
+        expandedMenu.appendChild(
+            btn.cloneNode(true)
+        );
     });
 
-    // Hide all except first 3 in main row
-    allButtons.forEach((btn, index) => {
-        if (index >= 3) btn.style.display = "none";
+    allButtons.forEach((btn,index)=>{
+
+        if(index >= 3)
+            btn.style.display = "none";
     });
 
-    // Open menu
-    moreBtn.addEventListener("click", () => {
+    moreBtn.addEventListener("click",()=>{
+
         expandedMenu.classList.add("active");
         overlay.classList.add("active");
     });
 
-    // Close menu when clicking outside
-    overlay.addEventListener("click", () => {
+    overlay.addEventListener("click",()=>{
+
         expandedMenu.classList.remove("active");
         overlay.classList.remove("active");
     });
 };
 
-/* PHOTO BUTTON → OPEN LETTER POPUP */
-document.addEventListener("DOMContentLoaded", () => {
-    const photoBtn = document.getElementById("photo-button");
-    const letterOverlay = document.getElementById("letter-overlay");
-    const letterPopup = document.getElementById("letter-popup");
-    const letterContent = document.getElementById("letter-content");
+/* LETTER POPUP */
 
-    photoBtn.addEventListener("click", async () => {
-        try {
-            const response = await fetch("letter.json");
-            const data = await response.json();
+document.addEventListener(
+"DOMContentLoaded",
+() => {
 
-            // Insert JSON content
+    const photoBtn =
+    document.getElementById("photo-button");
+
+    const letterOverlay =
+    document.getElementById("letter-overlay");
+
+    const letterPopup =
+    document.getElementById("letter-popup");
+
+    const letterContent =
+    document.getElementById("letter-content");
+
+    photoBtn.addEventListener(
+    "click",
+    async () => {
+
+        try{
+
+            const response =
+            await fetch("letter.json");
+
+            const data =
+            await response.json();
+
             letterContent.innerHTML = `
                 <h2>${data.title}</h2>
                 <p>${data.message}</p>
             `;
 
-            // Show popup
             letterOverlay.classList.add("active");
             letterPopup.classList.add("active");
 
-        } catch (err) {
-            console.error("Error loading letter.json:", err);
-            letterContent.innerHTML = "<p>Could not load letter.</p>";
+        }catch(err){
+
+            console.error(
+                "Error loading letter.json:",
+                err
+            );
+
+            letterContent.innerHTML =
+            "<p>Could not load letter.</p>";
+
             letterOverlay.classList.add("active");
             letterPopup.classList.add("active");
         }
     });
 
-    // Close popup when clicking outside
-    letterOverlay.addEventListener("click", () => {
+    letterOverlay.addEventListener(
+    "click",
+    () => {
+
         letterOverlay.classList.remove("active");
         letterPopup.classList.remove("active");
     });
 });
+
 </script>
 
 </body>
