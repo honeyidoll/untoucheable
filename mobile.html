@@ -582,6 +582,68 @@ body{
     }
 }
 
+@keyframes swipeBounce {
+    0%   { transform: translateX(0); }
+    30%  { transform: translateX(var(--swipe-dir)); }
+    100% { transform: translateX(0); }
+}
+
+.swipe-bounce {
+    animation: swipeBounce 0.35s ease;
+}
+
+@keyframes swipeBounce {
+    0%   { transform: translateX(0); }
+    30%  { transform: translateX(var(--swipe-dir)); }
+    100% { transform: translateX(0); }
+}
+
+.swipe-bounce {
+    animation: swipeBounce 0.35s ease;
+}
+
+#mode-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    margin: 10px 0 5px;
+    opacity: 0.85;
+}
+
+.mode-icon {
+    position: relative;
+    font-size: 18px;
+    cursor: default;
+    opacity: 0.35;
+    transition: 0.25s ease;
+    color: var(--text);
+}
+
+.mode-icon.active {
+    opacity: 1;
+    text-shadow: 0 0 8px var(--accent);
+    transform: scale(1.1);
+}
+
+/* underline bar */
+.mode-icon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    transform: translateX(-50%);
+    width: 0%;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: 0.25s ease;
+}
+
+.mode-icon.active::after {
+    width: 100%;
+}
+
 </style>
 </head>
 
@@ -676,6 +738,14 @@ body{
         margin:15px auto;
     ">
 
+    <div id="mode-indicator">
+    <div class="mode-icon" data-mode="left-json">☁︎</div>
+    <div class="mode-icon" data-mode="posts">✿</div>
+    <div class="mode-icon" data-mode="works">✎</div>
+    <div class="mode-icon" data-mode="interests">✦</div>
+    <div class="mode-icon" data-mode="right-json">♡</div>
+    </div>
+
 </div>
 
 <!-- CONTENT -->
@@ -701,6 +771,7 @@ body{
 </div>
 
 <script>
+let currentMode = "posts";
 
 /* JSON SOURCES */
 
@@ -753,6 +824,9 @@ document.getElementById("interests-tab");
 const contentArea =
 document.getElementById("content-area");
 
+const modeIcons =
+document.querySelectorAll(".mode-icon");
+
 /* SET ACTIVE TAB */
 
 function setActive(tab){
@@ -765,21 +839,19 @@ function setActive(tab){
 }
 
 /* LOAD POSTS */
-
 function loadPosts(){
-
+    currentMode = "posts";
     setActive(postsTab);
+    updateModeIndicator();
 
     fetch(PHOTOS_JSON)
     .then(r => r.json())
     .then(data => {
-
         const groups =
         Object.keys(data.groups);
 
         postsTab.textContent =
         groups.length + " posts";
-
         contentArea.innerHTML = "";
 
         const grid =
@@ -944,7 +1016,9 @@ function openSinglePost(name, group){
 
 function loadWorks(){
 
+    currentMode = "works";
     setActive(worksTab);
+    updateModeIndicator();
 
     fetch(WORKS_JSON)
     .then(r => r.json())
@@ -952,7 +1026,6 @@ function loadWorks(){
 
         worksTab.textContent =
         data.works.length + " works";
-
         contentArea.innerHTML = "";
 
         data.works.forEach(item => {
@@ -988,7 +1061,9 @@ function loadWorks(){
 
 function loadInterests(){
 
+    currentMode = "interests";
     setActive(interestsTab);
+    updateModeIndicator();
 
     fetch(INTERESTS_JSON)
     .then(r => r.json())
@@ -1026,6 +1101,39 @@ function loadInterests(){
             contentArea.appendChild(div);
         });
     });
+}
+
+function loadLeftJSON() {
+    currentMode = "left-json";
+    updateModeIndicator();
+    contentArea.innerHTML = `
+        <div class="list-item">
+            <div style="font-weight:bold; color:#ff66aa;">LEFT PANEL (test)</div>
+            <div style="margin-top:6px;">left.json not loaded yet — but swipe works!</div>
+        </div>
+    `;
+}
+
+function loadRightJSON() {
+    currentMode = "right-json";
+    updateModeIndicator();
+    contentArea.innerHTML = `
+        <div class="list-item">
+            <div style="font-weight:bold; color:#66aaff;">RIGHT PANEL (test)</div>
+            <div style="margin-top:6px;">right.json not loaded yet — but swipe works!</div>
+        </div>
+    `;
+}
+
+
+function loadInterestsCenter() {
+    currentMode = "interests-center";
+    loadInterests(); // your existing loader
+}
+
+function loadInterestsRight() {
+    currentMode = "interests-right";
+    loadInterests(); // same loader, different mode
 }
 
 /* TAB EVENTS */
@@ -1161,6 +1269,116 @@ document.addEventListener(
         letterPopup.classList.remove("active");
     });
 });
+
+/* ============================
+   SWIPE NAVIGATION (NON-DESTRUCTIVE)
+============================ */
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener("touchstart", e => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener("touchend", e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+});
+
+const pages = ["left-json", "posts", "works", "interests", "right-json"];
+
+function handleSwipe() {
+    const threshold = 50;
+
+    if (Math.abs(touchEndX - touchStartX) < threshold) return;
+
+    let index = pages.indexOf(currentMode);
+
+    if (touchEndX < touchStartX) {
+        // swipe LEFT → go forward
+        index++;
+    } else {
+        // swipe RIGHT → go backward
+        index--;
+    }
+
+    // clamp so edges stay as endpoints
+    if (index < 0) index = 0;
+    if (index >= pages.length) index = pages.length - 1;
+
+    const next = pages[index];
+
+    if (next === currentMode) return;
+
+    triggerSwipeBounce(touchEndX < touchStartX ? "left" : "right");
+
+    switch (next) {
+        case "left-json":
+            loadLeftJSON();
+            break;
+        case "posts":
+            loadPosts();
+            break;
+        case "works":
+            loadWorks();
+            break;
+        case "interests":
+            loadInterests();
+            break;
+        case "right-json":
+            loadRightJSON();
+            break;
+    }
+    updateModeIndicator();
+}
+
+function triggerSwipeBounce(direction) {
+    const area = document.getElementById("content-area");
+    const modeIcons = document.querySelectorAll(".mode-icon");
+
+    
+
+    // Set bounce direction
+    area.style.setProperty("--swipe-dir", direction === "left" ? "-12px" : "12px");
+
+    // Add bounce class
+    area.classList.add("swipe-bounce");
+
+    // Remove after animation ends
+    setTimeout(() => {
+        area.classList.remove("swipe-bounce");
+    }, 350);
+}
+
+function updateModeIndicator() {
+    modeIcons.forEach(icon => {
+        icon.classList.toggle(
+            "active",
+            icon.dataset.mode === currentMode
+        );
+    });
+}
+
+/* TAB ORDER (matches your UI) */
+const tabOrder = [postsTab, worksTab, interestsTab];
+
+/* Detect which tab is active */
+function getActiveTabIndex() {
+    return tabOrder.findIndex(tab => tab.classList.contains("active"));
+}
+
+function goToNextTab() {
+    let i = getActiveTabIndex();
+    i = (i + 1) % tabOrder.length;
+    tabOrder[i].click(); // uses your existing onclick
+}
+
+function goToPrevTab() {
+    let i = getActiveTabIndex();
+    i = (i - 1 + tabOrder.length) % tabOrder.length;
+    tabOrder[i].click(); // uses your existing onclick
+}
 
 </script>
 
