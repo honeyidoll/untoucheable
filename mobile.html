@@ -237,6 +237,81 @@ body{
     opacity:.85;
 }
 
+.social-icon {
+    transition: 0.25s ease;
+}
+
+/* default (light mode stays normal) */
+body:not(.dark) .social-icon {
+    filter: none;
+}
+
+/* =========================
+   DARK MODE ICON COLORS + GLOW
+========================= */
+
+/* Spotify green */
+body.dark .social-btn[href*="spotify"] .social-icon {
+    filter:
+        brightness(0)
+        saturate(100%)
+        invert(56%)
+        sepia(92%)
+        saturate(400%)
+        hue-rotate(90deg)
+        drop-shadow(0 0 6px #1DB954);
+}
+
+/* Twitter/X blue */
+body.dark .social-btn[href*="x.com"] .social-icon,
+body.dark .social-btn[href*="twitter"] .social-icon {
+    filter:
+        brightness(0)
+        saturate(100%)
+        invert(49%)
+        sepia(99%)
+        saturate(749%)
+        hue-rotate(180deg)
+        drop-shadow(0 0 6px #1DA1F2);
+}
+
+/* Instagram pink/purple */
+body.dark .social-btn[href*="instagram"] .social-icon {
+    filter:
+        brightness(0)
+        saturate(100%)
+        invert(28%)
+        sepia(93%)
+        saturate(2000%)
+        hue-rotate(290deg)
+        drop-shadow(0 0 8px #E1306C)
+        drop-shadow(0 0 12px #C13584);
+}
+
+/* YouTube red */
+body.dark .social-btn[href*="youtube"] .social-icon {
+    filter:
+        brightness(0)
+        saturate(100%)
+        invert(18%)
+        sepia(92%)
+        saturate(7000%)
+        hue-rotate(0deg)
+        drop-shadow(0 0 6px #FF0000);
+}
+
+/* Discord blurple */
+body.dark .social-btn[href*="discord"] .social-icon {
+    filter:
+        brightness(0)
+        saturate(100%)
+        invert(36%)
+        sepia(84%)
+        saturate(1800%)
+        hue-rotate(220deg)
+        drop-shadow(0 0 6px #5865F2);
+}
+
 /* + BUTTON */
 
 .social-more-btn{
